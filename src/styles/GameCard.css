@@ -1,0 +1,23 @@
+.card {
+    background-color: var(--card-bg);
+    width: 225px;
+    height: 300px;
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.card-img-container {
+    overflow: hidden;
+    border-radius: var(--border-radius);
+}
+
+.card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
