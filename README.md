@@ -46,5 +46,11 @@
 5. CardDisplay: Responsible for fetching and rendering out cards.
 6. GameModal: Shows results of the game, and also options which will be 'Play Again' or 'Quit'
 
-BOOK MARK: 1. Lets start with the assets and images. We want a background image that can represent all of gaming.
-Then let's start working on some mark up components
+BOOK MARK: So far markup looking good, we seem to have a good start on how we
+should display the cards, what we should have on the footer, and what
+we should have on the header.
+
+<!-- I don't think isWin is going to be a state, we don't need it
+   across renders, so I think it can just be something that's passed in
+   the issue would probably be passing some value to the modal
+   passively, but also through event listeners -->

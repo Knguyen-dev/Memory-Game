@@ -1,15 +1,16 @@
 import "../styles/App.css"
 import NavList from "./NavList"
 import GameCard from "./GameCard"
+import GameModal from "./GameModal"
+import { getGames } from "./requests"
 
 import PropTypes from "prop-types"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 
 /*
 - Header: Where user can select the difficulty, and when the 
     game starts, this header will show the scores instead.
-
 */
 function Header({ isPlaying, score, highScore, maxRounds, handleStartGame }) {
     return (
@@ -86,11 +87,12 @@ function Footer() {
 
 function App() {
     const [isPlaying, setIsPlaying] = useState(false)
+    const [isWin, setIsWin] = useState(false)
+
     const [mode, setMode] = useState("easy")
     const [gameList, setGameList] = useState([])
     const [score, setScore] = useState(0)
     const [highScore, setHighScore] = useState(0)
-
     const [showModal, setShowModal] = useState(false)
 
     // Maps the difficulty of the mode to the amount of cards that'll be shown
@@ -101,48 +103,78 @@ function App() {
     }
 
     const numRounds = modeMap[mode]
-    const isWin = null
 
-    function handleStartGame(difficulty) {
+    /*
+    - Starts a new game
+    1. Make sure modals aren't showing
+    2. Set game to playing and set the mode.
+    3. Then reset the score to 0
+    */
+    async function handleStartGame(mode) {
+        setShowModal(false)
         setIsPlaying(true)
-        setMode(difficulty)
+        setMode(mode)
+        setScore(0)
+        try {
+            const gameList = await getGames(numRounds)
+            setGameList(gameList)
+        } catch (error) {
+            console.error("Unable to load games during start phase: ", error)
+        }
+    }
+
+    /*
+    - Handles how we end a game 
+    1. Set is playing to false as the game is over
+    2. We set states to show the modal, and set state 
+        to indicate the whether the user won or lost
+    */
+    function handleEndGame(isWin) {
+        setIsPlaying(false)
+        setShowModal(true)
+        setIsWin(isWin)
+    }
+
+    /*
+    - Handles how we just quit the game, which means 
+        we aren't playing.
+    1. Indicate user isn't playing
+    2. Don't show game results modal
+    3. Reset the score to 0
+    */
+    function handleQuitGame() {
+        setIsPlaying(false)
+        setShowModal(false)
         setScore(0)
     }
 
     /*
-    - The ending of a game can happen passively with the player getting 
-        all of the cards, or it could happen via a player clicking a visited card,
-        or the player could just quite the game.
-
-    1. Player wins: Here you'd likely have some conditional during 
-        the rendering that calculates whether the score is equal to the 
-        number of rounds. If it is, we may be able to call the end game 
-        function and show a victory screen
-    
-    2. Player loses by clicking a visited card: In this case we're probably
-        going to have some kind of event listener on a card that will
-        trigger the end game function, indicating a loss instead.
-        
-    3. If the player prematurely quits, we can just call handleEndGame, 
-        it make it so isQuit=true
-    
+    - If the current score is greater than the user's high score, then we 
+        update the value of high score.
     */
-    function handleEndGame(isQuit, isWin) {
-        setIsPlaying(false)
+    if (score > highScore) {
+        setHighScore(score)
+    }
 
-        // If isQuit, then don't show a results screen. We should just go
-        // back to an empty screen
-
-        // Else, we should actually show the modal and show the results of the game
-
-        // Should also clear all of the cards as well, or at least make them
-        // not clickable so it doesn't try to start another game
+    /*
+    - If score == number of rounds, then player picked all of the right cards
+        so end the game and indicate that the user won.
+     */
+    if (score === numRounds) {
+        handleEndGame(true)
     }
 
     return (
         <div className="app-container">
-            <div className="overlay hidden"></div>
-            <div className="game-results-modal"></div>
+            {showModal && (
+                <GameModal
+                    isWin={isWin}
+                    score={score}
+                    highScore={highScore}
+                    playAgain={() => handleStartGame(mode)}
+                    quitGame={handleQuitGame}
+                />
+            )}
 
             <Header
                 isPlaying={isPlaying}

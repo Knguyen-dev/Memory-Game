@@ -11,6 +11,7 @@ const sampleGameList = [
         title: "No Man's Sky",
         developer: "Hello Games",
         releaseDate: "August 2016",
+        isVisited: true
     },
 ]
 
@@ -31,7 +32,7 @@ export default function GameCard({ gameObj }) {
             <section className="card-info">
                 <span className="card-text">Title: {gameObj.title}</span>
                 <span className="card-text">
-                    Developer: {gameObj.developer}
+                    Metacritic: {gameObj.platforms}
                 </span>
                 <span className="card-text">
                     Release: {gameObj.releaseDate}
@@ -45,7 +46,7 @@ GameCard.propTypes = {
     gameObj: PropTypes.shape({
         title: PropTypes.string,
         imgSrc: PropTypes.string,
-        developer: PropTypes.string,
+        platforms: PropTypes.string,
         releaseDate: PropTypes.string,
     }),
 }
