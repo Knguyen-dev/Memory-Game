@@ -1,12 +1,16 @@
 .card {
     background-color: var(--card-bg);
     width: 225px;
-    height: 300px;
+    height: 275px;
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
-    justify-content: center;
     cursor: pointer;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .card-img-container {
@@ -15,9 +19,10 @@
 }
 
 .card-info {
+    padding: 12px 0;
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    text-align: center;
 }

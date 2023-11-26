@@ -9,7 +9,6 @@ const sampleGameList = [
     {
         imgSrc: "src/assets/no_mans_sky.jpg",
         title: "No Man's Sky",
-        developer: "Hello Games",
         releaseDate: "August 2016",
         isVisited: true
     },
@@ -19,24 +18,23 @@ const sampleGameList = [
 
 import "../styles/GameCard.css"
 import PropTypes from "prop-types"
-export default function GameCard({ gameObj }) {
+export default function GameCard({ gameObj, handleCardClick }) {
     return (
-        <div className="card">
+        <div className="card" onClick={handleCardClick}>
             <div className="card-img-container">
                 <img
-                    src={gameObj.imgSrc}
-                    alt={gameObj.title + " image"}
+                    src={gameObj.background_image}
+                    alt={gameObj.name + " image"}
                     className="card-img"
                 />
             </div>
             <section className="card-info">
-                <span className="card-text">Title: {gameObj.title}</span>
+                <span className="card-text">Title: {gameObj.name}</span>
                 <span className="card-text">
-                    Metacritic: {gameObj.platforms}
+                    Metacritic:{" "}
+                    {gameObj.metacritic ? gameObj.metacritic : "N/A"}
                 </span>
-                <span className="card-text">
-                    Release: {gameObj.releaseDate}
-                </span>
+                <span className="card-text">Release: {gameObj.released}</span>
             </section>
         </div>
     )
@@ -44,9 +42,10 @@ export default function GameCard({ gameObj }) {
 
 GameCard.propTypes = {
     gameObj: PropTypes.shape({
-        title: PropTypes.string,
-        imgSrc: PropTypes.string,
-        platforms: PropTypes.string,
-        releaseDate: PropTypes.string,
+        name: PropTypes.string,
+        background_image: PropTypes.string,
+        metacritic: PropTypes.number,
+        released: PropTypes.string,
     }),
+    handleCardClick: PropTypes.func,
 }

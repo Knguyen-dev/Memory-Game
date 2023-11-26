@@ -36,21 +36,3 @@
 10. Make it so the mouse cursor is interactive with the cards. So like the cards move if a mouse cursor is over it.
 
 # Components of our app
-
-1. App: Root
-2. Background image: Having a component where we can put the src, and it auto sets the background image
-3. Modal and Overlay components: Modal will show a game screen, whilst overlay will just darken the background. These
-   will be used in tandem.
-4. Home Screen: Screen where you can pick difficulty, has title "Memory Game", has Game title on it.
-
-5. CardDisplay: Responsible for fetching and rendering out cards.
-6. GameModal: Shows results of the game, and also options which will be 'Play Again' or 'Quit'
-
-BOOK MARK: So far markup looking good, we seem to have a good start on how we
-should display the cards, what we should have on the footer, and what
-we should have on the header.
-
-<!-- I don't think isWin is going to be a state, we don't need it
-   across renders, so I think it can just be something that's passed in
-   the issue would probably be passing some value to the modal
-   passively, but also through event listeners -->

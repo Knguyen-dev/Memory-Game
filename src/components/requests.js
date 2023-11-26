@@ -12,6 +12,8 @@ function processGames(gameList) {
             metacritic: gameObj.metacritic,
         }
     })
+
+    console.log(gameList)
     return gameList
 }
 
@@ -47,11 +49,11 @@ NOTE: We're querying from all games with no parameters so we should get
     access to all games on the database. Rawg is stated to have more than 350,000
     games, and as of writing the amount was 859,300 indicated by a GET request.
     However, to be fun and get more recent and recognizable games, we'll limit the 
-    count to 10,000 games, which greatly reduces the amount of pages in the page range.
+    count to 5000 games, which greatly reduces the amount of pages in the page range.
 
 */
 async function getGames(pageSize) {
-    const gameCount = 10000
+    const gameCount = 5000
     const upperPageLimit = Math.floor(gameCount / pageSize)
     const randomPageNum = Math.floor(Math.random() * upperPageLimit) + 1
     try {

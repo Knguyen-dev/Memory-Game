@@ -1,9 +1,7 @@
 import PropTypes from "prop-types"
-
 import "../styles/GameModal.css"
 import { useState, useRef, useEffect } from "react"
 import { fetchGifURL } from "./requests"
-
 /*
 - GameModal: Component that shows the game results.
     - Show whether win or loss (game over or victory).
@@ -13,11 +11,7 @@ import { fetchGifURL } from "./requests"
         1. Play Again: Would restart game with the same mode 
         2. Quit: Would return the user to the home screen or state, where
             they can still pick difficulty and whatnot.
-
-
-
 */
-
 export default function GameModal({
     isWin,
     score,
