@@ -15,37 +15,57 @@ const sampleGameList = [
 ]
 
 */
+import "../styles/GameCard.css";
+import PropTypes from "prop-types";
 
-import "../styles/GameCard.css"
-import PropTypes from "prop-types"
-export default function GameCard({ gameObj, handleCardClick }) {
-    return (
-        <div className="card" onClick={handleCardClick}>
-            <div className="card-img-container">
-                <img
-                    src={gameObj.background_image}
-                    alt={gameObj.name + " image"}
-                    className="card-img"
-                />
-            </div>
-            <section className="card-info">
-                <span className="card-text">Title: {gameObj.name}</span>
-                <span className="card-text">
-                    Metacritic:{" "}
-                    {gameObj.metacritic ? gameObj.metacritic : "N/A"}
-                </span>
-                <span className="card-text">Release: {gameObj.released}</span>
-            </section>
-        </div>
-    )
+function Card({ children, isFlipped }) {
+	return (
+		<div className={`card ${isFlipped ? "flipped" : ""}`}>
+			<div className="card-inner">
+				<div className="card-front">Card Front</div>
+				<div className="card-back">{children}</div>
+			</div>
+		</div>
+	);
+}
+Card.propTypes = {
+	children: PropTypes.element,
+	isFlipped: PropTypes.bool,
+};
+
+export default function GameCard({ gameObj, handleCardClick, isFlipped }) {
+	return (
+		<Card isFlipped={isFlipped}>
+			<div className="game-card-content" onClick={handleCardClick}>
+				<div className="card-img-container">
+					<img
+						className="game-card-img"
+						src={gameObj.background_image}
+						alt={gameObj.name + " image"}
+					/>
+				</div>
+				<section className="game-card-info">
+					<span className="card-text">Title: {gameObj.name}</span>
+					<span className="card-text">
+						Metacritic:{" "}
+						{gameObj.metacritic ? gameObj.metacritic : "N/A"}
+					</span>
+					<span className="card-text">
+						Release: {gameObj.released}
+					</span>
+				</section>
+			</div>
+		</Card>
+	);
 }
 
 GameCard.propTypes = {
-    gameObj: PropTypes.shape({
-        name: PropTypes.string,
-        background_image: PropTypes.string,
-        metacritic: PropTypes.number,
-        released: PropTypes.string,
-    }),
-    handleCardClick: PropTypes.func,
-}
+	gameObj: PropTypes.shape({
+		name: PropTypes.string,
+		background_image: PropTypes.string,
+		metacritic: PropTypes.number,
+		released: PropTypes.string,
+	}),
+	handleCardClick: PropTypes.func,
+	isFlipped: PropTypes.bool,
+};

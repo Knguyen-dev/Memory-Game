@@ -2,42 +2,44 @@
 
 
 */
-function processGames(gameList) {
-    gameList = gameList.map((gameObj) => {
-        return {
-            id: gameObj.id,
-            name: gameObj.name,
-            released: gameObj.released,
-            background_image: gameObj.background_image,
-            metacritic: gameObj.metacritic,
-        }
-    })
 
-    console.log(gameList)
-    return gameList
+import { v4 as uuidv4 } from "uuid";
+
+function processGames(gameList) {
+	gameList = gameList.map((gameObj) => {
+		return {
+			id: uuidv4(),
+			name: gameObj.name,
+			released: gameObj.released,
+			background_image: gameObj.background_image,
+			metacritic: gameObj.metacritic,
+		};
+	});
+
+	return gameList;
 }
 
 function fetchGames(pageNumber, pageSize) {
-    const apiKey = "79e2d19924d040afa2644aa5867a40f4"
-    const baseURL = "https://api.rawg.io/api/games"
-    const requestURL = `${baseURL}?key=${apiKey}&page=${pageNumber}&page_size=${pageSize}`
-    return fetch(requestURL, {
-        mode: "cors",
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw response
-            }
-            return response.json()
-        })
-        .then((jsonData) => {
-            const gameList = processGames(jsonData.results)
-            return gameList
-        })
-        .catch((error) => {
-            console.error("Error in fetching the games: ", error)
-            throw error
-        })
+	const apiKey = "79e2d19924d040afa2644aa5867a40f4";
+	const baseURL = "https://api.rawg.io/api/games";
+	const requestURL = `${baseURL}?key=${apiKey}&page=${pageNumber}&page_size=${pageSize}`;
+	return fetch(requestURL, {
+		mode: "cors",
+	})
+		.then((response) => {
+			if (!response.ok) {
+				throw response;
+			}
+			return response.json();
+		})
+		.then((jsonData) => {
+			const gameList = processGames(jsonData.results);
+			return gameList;
+		})
+		.catch((error) => {
+			console.error("Error in fetching the games: ", error);
+			throw error;
+		});
 }
 
 /*
@@ -53,41 +55,41 @@ NOTE: We're querying from all games with no parameters so we should get
 
 */
 async function getGames(pageSize) {
-    const gameCount = 5000
-    const upperPageLimit = Math.floor(gameCount / pageSize)
-    const randomPageNum = Math.floor(Math.random() * upperPageLimit) + 1
-    try {
-        const gameList = await fetchGames(randomPageNum, pageSize)
-        return gameList
-    } catch (error) {
-        console.log("Error in getting games: ", error)
-        throw error
-    }
+	const gameCount = 5000;
+	const upperPageLimit = Math.floor(gameCount / pageSize);
+	const randomPageNum = Math.floor(Math.random() * upperPageLimit) + 1;
+	try {
+		const gameList = await fetchGames(randomPageNum, pageSize);
+		return gameList;
+	} catch (error) {
+		console.error("Error in getting games: ", error);
+		throw error;
+	}
 }
 
 function fetchGifURL(searchTerm) {
-    // Create the request URL
-    const apiKey = "NEs7tmX6Z6Up0BlOyfGtmFbMHoe2fTKh" // free api key
-    const baseURL = `https://api.giphy.com/v1/gifs/translate?`
-    const requestURL = `${baseURL}api_key=${apiKey}&s=${searchTerm}`
+	// Create the request URL
+	const apiKey = "NEs7tmX6Z6Up0BlOyfGtmFbMHoe2fTKh"; // free api key
+	const baseURL = `https://api.giphy.com/v1/gifs/translate?`;
+	const requestURL = `${baseURL}api_key=${apiKey}&s=${searchTerm}`;
 
-    // Fetch the gif
-    return fetch(requestURL, {
-        mode: "cors",
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw response
-            }
-            return response.json()
-        })
-        .then((jsonData) => {
-            return jsonData.data.images.original.url
-        })
-        .catch((error) => {
-            console.error("Error fetching the gif: ", error)
-            throw error // throws error further if needed
-        })
+	// Fetch the gif
+	return fetch(requestURL, {
+		mode: "cors",
+	})
+		.then((response) => {
+			if (!response.ok) {
+				throw response;
+			}
+			return response.json();
+		})
+		.then((jsonData) => {
+			return jsonData.data.images.original.url;
+		})
+		.catch((error) => {
+			console.error("Error fetching the gif: ", error);
+			throw error; // throws error further if needed
+		});
 }
 
-export { getGames, fetchGifURL }
+export { getGames, fetchGifURL };
