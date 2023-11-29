@@ -5,10 +5,29 @@ import CardContainer from "./CardContainer";
 import { deepCopyArr, shuffleArr } from "./utilities";
 import GameModal from "./GameModal";
 import { getGames } from "./requests";
-import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState, useRef } from "react";
+import ReactHowler from "react-howler";
+import music from "../assets/Memories-Of-Spring.mp3";
+import success_sound from "../assets/Success-Sound.mp3";
 
 function App() {
+	/*
+	+ App's states and variables:
+	1. isFetchError (bool): State for tracking whether fetching with the video game api failed or not
+	2. isPlaying (bool): State for tracking whether the user is currently playing a round or not
+	3. mode (str): State that tracks what difficulty or mode the user is playing
+	4. cardList (array): List of cards or 'video game' objects that the user is playing with
+	5. score (integer): current score of the user
+	6. highScore (integer): highest score achieved by the user
+	7. showModal (bool): Boolean that tracks whether the GameModal or the game results modal is being shown
+	8. playSound (bool): Tracks whether the application will play sound. 
+	9. playMusic (bool): Tracks whether music is being played on the application
+	10. pointSoundRef (ref): Ref that points to audio element for playing the 'success-sound'
+	11. modeMap (map): Map that controls how many rounds or cards that a mode/difficulty will
+		make the player play with.
+	12. numRounds (integer): Number of rounds that are being played for the current session. This is 
+		also the number of cards the user has to play with.
+	*/
 	const [isFetchError, setFetchError] = useState(false);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [mode, setMode] = useState("easy");
@@ -16,15 +35,14 @@ function App() {
 	const [score, setScore] = useState(0);
 	const [highScore, setHighScore] = useState(0);
 	const [showModal, setShowModal] = useState(false);
-
+	const [playSound, setPlaySound] = useState(false);
+	const [playMusic, setPlayMusic] = useState(false);
+	const pointSoundRef = useRef(null);
 	const modeMap = {
-		// Maps the difficulty of the mode to the amount of cards that'll be shown
 		easy: 5,
 		medium: 10,
 		hard: 15,
 	};
-
-	// Calculate the number of rounds based on the mode that was set for the game
 	const numRounds = modeMap[mode];
 
 	useEffect(() => {
@@ -34,8 +52,10 @@ function App() {
         - if failed fetch: If the fetching fails, then we set the state value 
             of isFetchError to true, so that we re-render the page with 
             an error message. Then we set isPlaying to false, as the player 
-            isn't currently playing either, which prevents the difficulty selector from
-            being hidden.
+            isn't currently playing since we couldn't start the game properly.
+
+		NOTE: Starting the game is the event, but we let fetching the data be a side-effect
+			since it's not a pure calculation. Also fetching data wtihin an effect is the common approach.
         */
 		async function loadGames() {
 			try {
@@ -55,18 +75,37 @@ function App() {
 		}
 	}, [isPlaying, numRounds]);
 
+	/*
+	+ Functions for toggling msuic and sound in the application
+	*/
+	function toggleMusic() {
+		setPlayMusic((playMusic) => !playMusic);
+	}
+	function toggleSound() {
+		setPlaySound((playSound) => !playSound);
+	}
+
+	function playPointSound() {
+		/*
+		+ Function that plays the "success" sound when the user gets a point.
+		- NOTE: We pause the audio and reset it's time back to 0, which allows us to 
+			quickly play the audio in succession. This is necessary in the case the user
+			gets points very quickly, which allows the sound to be played very quickly.
+		*/
+		const audioEl = pointSoundRef.current;
+		audioEl.pause();
+		audioEl.currentTime = 0;
+		audioEl.play();
+	}
+
 	function shuffleCards(cardsArr) {
 		/*
         + Returns a shuffled array game objects
-        1. Create shallow copy, we're assuming cardsArr isn't a state array and that was handled earlier
+        1. Create shallow copy, we're assuming cardsArr is a deepcopy of the state array.
         2. For each card object, assign a new uuid for rendering purposes
         3. Update the state array of cards
         */
 		let newCards = [...cardsArr];
-		newCards = newCards.map((cardObj) => ({
-			...cardObj,
-			id: uuidv4(),
-		}));
 		newCards = shuffleArr(newCards);
 		setCardList(newCards);
 	}
@@ -95,6 +134,11 @@ function App() {
 	}
 
 	function handleIncrementScore() {
+		/*
+		+ Function that handles logic involved with incrementing the score.
+			This will be tracking the high score, and tracking whether the 
+			winner won the game by selecting all cards.
+		*/
 		const updatedScore = score + 1;
 		setScore(updatedScore);
 		if (updatedScore > highScore) {
@@ -103,13 +147,12 @@ function App() {
 		if (updatedScore === numRounds) {
 			handleEndGame();
 		}
-		return updatedScore;
 	}
 
 	function handleEndGame() {
 		/*
         - Handles how we end a game 
-        1. Set is playing to false as the game is over
+        1. Set is playing to false as the game is over, so the user isn't playing
         2. We set states to show the modal, and set state 
             to indicate the whether the user won or lost
         */
@@ -121,10 +164,9 @@ function App() {
 		/*
         - Handles how we just quit the game, which means 
             we aren't playing.
-        1. Indicate user isn't playing
-        2. Don't show game results modal
-        3. Reset the score to 0
-        4. Clear the list of games to prevent any games from rendering
+        1. Don't show game results modal
+        2. Reset the score to 0
+        3. Clear the list of games to prevent any games from rendering
         */
 		setShowModal(false);
 		setScore(0);
@@ -137,18 +179,21 @@ function App() {
             are two cases.
         - Clicking a card that's already been visited:
             1. The player loses the memory game in this case, so
-                we should end the game on a loss            
+                we should end the game, and logic in GameModal will show result of the game.        
         - Clicking on a new card:
             1. Increment player's score. Now check if their updated score gave
                 them a new high score or let me win the game
-            2. Create new list of cards, and the selected card the user picked should be as visited
-            3. Then set and shuffle the cards.
+			2. If they choose sound to be on, play the sound for getting a point.
+            3. Create new list of cards, and the selected card the user picked should be as visited
+            4. Then set and shuffle the cards.
         */
-
 		if (cardList[cardIndex].isVisited) {
 			handleEndGame();
 		} else {
 			handleIncrementScore();
+			if (playSound) {
+				playPointSound();
+			}
 			let newCards = deepCopyArr(cardList);
 			newCards[cardIndex].isVisited = true;
 			shuffleCards(newCards);
@@ -157,6 +202,7 @@ function App() {
 
 	return (
 		<div className="app-container">
+			{/* A modal that will show the result of the game, and allow the user to continue or quit */}
 			{showModal && (
 				<GameModal
 					score={score}
@@ -167,6 +213,7 @@ function App() {
 				/>
 			)}
 
+			{/* Header that will show score, high score, etc., but also shows buttons for difficulty */}
 			<Header
 				isPlaying={isPlaying}
 				score={score}
@@ -175,6 +222,8 @@ function App() {
 				handleStartGame={handleStartGame}
 			/>
 
+			{/* Main content section that will show the cards when we successfully got games, but if 
+				we failed, it'll show an error message */}
 			<section className="main-content">
 				{isFetchError ? (
 					<p id="game-fetch-error-el">
@@ -187,7 +236,23 @@ function App() {
 					/>
 				)}
 			</section>
-			<Footer />
+
+			{/* Footer that contains buttons for toggling music sound, but also links */}
+			<Footer
+				playMusic={playMusic}
+				playSound={playSound}
+				toggleMusic={toggleMusic}
+				toggleSound={toggleSound}
+			/>
+
+			{/* Audio related elements */}
+			<ReactHowler src={music} volume={0.2} loop playing={playMusic} />
+			<audio
+				ref={pointSoundRef}
+				src={success_sound}
+				preload="auto"
+				style={{ display: "none" }}
+			/>
 		</div>
 	);
 }

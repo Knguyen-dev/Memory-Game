@@ -1,55 +1,60 @@
 .app-container {
-    background-image: url("../assets/gaming_bg.png");
-    min-width: 100vw;
-    min-height: 100vh;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+	background-image: url("../assets/gaming_bg.png");
+	min-width: 100vw;
+	min-height: 100vh;
+
+	background-size: cover;
+	background-position: center;
+
+	/* Good solution for having background image scroll with the rest of the screen */
+	background-attachment: fixed;
+
+	display: grid;
+	grid-template-rows: auto 1fr auto;
 }
 
 /* Header Styles */
 .app-header {
-    padding: 12px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    row-gap: 8px;
+	padding: 12px 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	row-gap: 8px;
 }
 .app-header h1 {
-    font-size: 2.5em;
+	font-size: 2.5em;
+	font-family: var(--VanillaMilk-font);
 }
 
 .app-header div {
-    display: flex;
-    gap: 1em;
-    justify-content: center;
+	display: flex;
+	gap: 1em;
+	justify-content: center;
 }
 
 /* Card grid styles */
 .cards-container {
-    margin: 2em auto;
-    display: flex;
-    row-gap: 2em;
-    column-gap: 0.75em;
-    justify-content: center;
-    width: 90%;
-    flex-wrap: wrap;
+	margin: 2em 0;
+	display: flex;
+	row-gap: 2em;
+	column-gap: 0.75em;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 
 /* Footer styles */
 .app-footer {
-    padding: 6px 1.5em;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+	padding: 6px 1.5em;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
+
 .footer-btns {
-    display: flex;
-    column-gap: 4px;
+	display: flex;
+	column-gap: 4px;
 }
 
 #game-fetch-error-el {
-    text-align: center;
+	text-align: center;
 }

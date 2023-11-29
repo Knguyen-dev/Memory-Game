@@ -1,59 +1,10 @@
-.card {
-	width: 225px;
-	height: 275px;
-	perspective: 1000px;
-}
-
-.card:hover {
-	.card-inner {
-		transform: rotateY(180deg);
-	}
-}
-
-.card-inner {
-	width: 100%;
-	height: 100%;
-	position: relative;
-	transition: transform 0.5s;
-	transform-style: preserve-3d;
-	transform: rotateY(180deg);
-}
-
-.card.flipped {
-	.card-inner {
-		transform: rotateY(180deg);
-	}
-}
-
-.card-front,
-.card-back {
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	backface-visibility: hidden;
-	background-color: var(--card-bg);
-}
-
-.card-front {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-weight: bold;
-	font-size: 20px;
-	/* z-index: 2; */
-	pointer-events: none;
-}
-
-.card-back {
-	transform: rotateY(180deg);
-	cursor: pointer;
-}
-
 /* Stylings for the game card itself */
 .game-card-content {
 	display: flex;
 	flex-direction: column;
-	height: 100%;
+	width: 225px;
+	height: 275px;
+	background-color: var(--card-bg);
 }
 
 .card-img-container {

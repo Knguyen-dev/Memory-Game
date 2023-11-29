@@ -1,4 +1,7 @@
 /*
++ Component that handles the rendering of the cards.
+
+
 React Rendering with Keys:
 
 1. React uses keys to efficiently manage and update elements in lists.
@@ -18,8 +21,7 @@ This forces React to re-render elements and reapply animations, achieving the de
 
 import GameCard from "./GameCard";
 import PropTypes from "prop-types";
-// import { TransitionGroup, CSSTransition } from "react-transition-group";
-function CardContainer({ cardList, handleCardClick, isFlipped }) {
+function CardContainer({ cardList, handleCardClick }) {
 	return (
 		<div className="cards-container">
 			{cardList.map((cardObj, index) => {
@@ -28,7 +30,6 @@ function CardContainer({ cardList, handleCardClick, isFlipped }) {
 						key={`${cardObj.id}`}
 						gameObj={cardObj}
 						handleCardClick={() => handleCardClick(index)}
-						isFlipped={isFlipped}
 					/>
 				);
 			})}

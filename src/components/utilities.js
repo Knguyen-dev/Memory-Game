@@ -1,4 +1,8 @@
-// Using Fisher-Yates or Knuff shuffle algorithm
+/*
++ Module for utility functions.
+*/
+
+// Using Fisher-Yates or Knuff shuffle algorithm for shuffling cards
 function shuffleArr(arr) {
 	const shuffledArr = arr.slice();
 	for (let i = shuffledArr.length - 1; i > 0; i--) {
@@ -15,6 +19,7 @@ function deepCopyArr(arr) {
 	return arr.map((obj) => ({ ...obj }));
 }
 
+// Returns a bad value for an http request, good for mocking an http request and behavior
 async function badRequest() {
 	throw new Error("Not fetching today");
 }
