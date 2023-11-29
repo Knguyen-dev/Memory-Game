@@ -8,3 +8,7 @@
     Music promoted by https://www.chosic.com/free-music/all/
     Creative Commons CC BY 3.0
     https://creativecommons.org/licenses/by/3.0/
+
+# 'gh-pages branch already exists' error
+
+-   I to manually remove the folder node_modules/.cache/gh-pages to get the deployment to work.
